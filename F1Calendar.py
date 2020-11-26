@@ -38,8 +38,8 @@ class F1Calendar(object):
         for e in events:
             ret.append(e)
 
-            # The race on Sunday is the last event in a weekend
-            if "sun, " in e.lower():
+            # The race is the last event in a weekend
+            if " - grand prix" in e.lower():
                 break
         return ret
 
@@ -95,8 +95,10 @@ class F1Calendar(object):
         """
         # Format string message for next event
         # See http://strftime.org/
-        start_friendly = start.strftime("%a, %b %d %I:%M %p %Z")
-        return u":arrow_right: **{}**:\n   - Starts in: **{}**\n   - Starts at: **{}**\n".format(title, diff, start_friendly.encode('utf-8'))
+        # Original - "%a, %b %d %I:%M %p %Z" = Sun, Nov 25 03:10 PM South Africa Standard Time
+        # Modified - "%A, %b %d %H:%M %Z" = Sunday, Nov 25 @ 15:10 South Africa Standard Time
+        start_friendly = start.strftime("%A, %b %d @ %H:%M %Z")
+        return u":arrow_right: **{}**:\n   - Starts in: **{}**\n   - Starts at: **{}**\n".format(title, diff, start_friendly)  # .encode('utf-8')
 
     def _get_event_data(self, event):
         """
@@ -113,4 +115,3 @@ class F1Calendar(object):
         end = end_utc.astimezone(tz.tzlocal())
 
         return [title, start, end]
-

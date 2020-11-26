@@ -1,5 +1,8 @@
-from urllib import quote_plus, _is_unicode
-import urllib2
+# from urllib import _is_unicode
+from urllib.parse import quote_plus
+import urllib3
+import urllib.request
+import urllib.parse
 import sys
 
 
@@ -21,31 +24,32 @@ class DiscordWebhook(object):
     def send_message(self, message):
         # Build request
         form_data = {'content': message}
-        form_data = self.__utf8_urlencode(form_data)
-        api_request = urllib2.Request(url=self.url, data=form_data, headers=self.HEADERS)
+        # form_data = self.__utf8_urlencode(form_data) --- Original
+        form_data = urllib.parse.urlencode(form_data).encode("utf-8")
+        api_request = urllib.request.Request(self.url, form_data, self.HEADERS)
 
         if self.debug:
-            print "------------------------"
-            print "Discord Webhook Request:"
-            print api_request
-            print "------------------------"
+            print("------------------------")
+            print("Discord Webhook Request:")
+            print(api_request)
+            print("------------------------")
 
         # Send request, get response
-        result = urllib2.urlopen(api_request)
+        result = urllib.request.urlopen(api_request)
         result_content = result.read()
 
         # See https://discordapp.com/developers/docs/topics/response-codes
         # for response code information.
         if self.debug:
-            print "------------------------"
-            print "Discord Webhook Response:"
-            print """
+            print("------------------------")
+            print("Discord Webhook Response:")
+            print("""
 {}
 Result Status: {}
 URL: {}
 Info: {}
-""".format(result_content, result.getcode(), result.geturl(), result.info())
-            print "------------------------"
+""".format(result_content, result.getcode(), result.geturl(), result.info()))
+            print("------------------------")
 
         return [result.getcode(), result.info()]
 
@@ -54,7 +58,7 @@ Info: {}
         Shamelessly stolen from python 2.7 urllib.urlencode() and updated to be sane for utf8 strings.
         """
 
-        if hasattr(query,"items"):
+        if hasattr(query, "items"):
             # mapping objects
             query = query.items()
         else:
@@ -70,8 +74,8 @@ Info: {}
                 # allowed empty dicts that type of behavior probably should be
                 # preserved for consistency
             except TypeError:
-                ty,va,tb = sys.exc_info()
-                raise TypeError, "not a valid non-string sequence or mapping object", tb
+                ty, va, tb = sys.exc_info()
+                raise TypeError("not a valid non-string sequence or mapping object")  # , tb
 
         l = []
         if not doseq:
@@ -90,7 +94,7 @@ Info: {}
                     # is there a reasonable way to convert to ASCII?
                     # encode generates a string, but "replace" or "ignore"
                     # lose information and "strict" can raise UnicodeError
-                    v = quote_plus(v.encode("ASCII","replace"))
+                    v = quote_plus(v.encode("ASCII", "replace"))
                     l.append(k + '=' + v)
                 else:
                     try:
