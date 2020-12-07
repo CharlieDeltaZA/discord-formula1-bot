@@ -3,7 +3,7 @@ import datetime
 import os
 from DiscordWebhook import DiscordWebhook
 from F1Calendar import F1Calendar
-# from discord_webhook import DiscordWebhook
+from discord_webhook import DiscordWebhook, DiscordEmbed
 
 DO_REQUEST = True
 root_dir = os.path.dirname(os.path.realpath(__file__))
@@ -22,8 +22,11 @@ if dow == 0:
     # Custom discord emotes in use here...
     prefix_str = u"<:f1:511528935180468225> Happy Monday! Here is the schedule for the next race weekend: \n\n"
     suffix_str = u"<:ferrari:455426708674445312>"
-    events = cal.get_next_race_events()
-    output_str = prefix_str + "\n".join(events) + "\n" + suffix_str
+    # events = cal.get_next_race_events()
+    events = cal.getNextRaceEvents()
+    # print(events)
+    # output_str = prefix_str + "\n".join(events) + "\n" + suffix_str
+    
 # """
 # Suppose this isn't entirely needed. It can fail silently without pushing a message to DC.
 # Tues, Wed, Or None avail
@@ -32,8 +35,8 @@ if dow == 0:
 #    events = "None found"
 #    output_str = "No Events Found!"
 # """
-# Thurs, Fri, Sat, Sun
 
+# Thurs, Fri, Sat, Sun
 elif dow in (3, 4, 5, 6):
     # Custom discord emotes in use here...
     prefix_str = u"<:f1:511528935180468225> Race Weekend! In the next 24 hours: \n"
@@ -43,11 +46,13 @@ elif dow in (3, 4, 5, 6):
 
 
 if events:
-    print("Sending: " + output_str)  # .encode('utf-8'))
+    # print("Sending: " + output_str)  # .encode('utf-8'))
+    for e in events:
+        webhook.add_embed(e)
     # webhook = DiscordWebhook(url=WEBHOOK_URL, content=output_str)
 
     if DO_REQUEST:
-        # response = webhook.execute()
+        response = webhook.execute()
         # print(WEBHOOK_URL)
-        # print(response)
-        webhook.send_message(output_str)
+        print(response)
+        # webhook.send_message(output_str)

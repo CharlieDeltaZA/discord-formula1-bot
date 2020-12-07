@@ -2,7 +2,7 @@ import datetime
 
 from dateutil import tz
 from icalendar import Calendar
-
+from discord_webhook import DiscordEmbed
 
 class F1Calendar(object):
 
@@ -29,6 +29,25 @@ class F1Calendar(object):
         """
         return self.get_events(upcoming_only=True, filter=self._event_filter_next_24h)
 
+    def getNextRaceEvents(self):
+        """
+        Returns DiscordEmbed objects of events that will take place in the next race weekend.
+        """
+        events = self.getEvents(upcoming_only=True)
+        embeds = []
+        for e in events:
+            # print(e)
+            emb = DiscordEmbed(title="Session:", description=e[0], color=16717825)
+            emb.add_embed_field(name='Starts In:', value=e[1])
+            emb.add_embed_field(name='Starts At:', value=e[2])
+
+            embeds.append(emb)
+            # The race is the last event in a weekend
+            if " - grand prix" in e[0].lower():
+                break
+
+        return embeds
+
     def get_next_race_events(self):
         """
         Returns friendly-strings of events that will take place in the next race weekend.
@@ -49,6 +68,35 @@ class F1Calendar(object):
         """
         return self.get_events()[0]
 
+    def getEvents(self, upcoming_only=True, filter=None):
+        """
+        Returns a list of strings representing race events.
+        :param upcoming_only: True = do not return events that have already begun or finished.
+        """
+        events = []
+
+        for item in self.cal_events:
+            title, start, end = self._get_event_data(item)
+
+            # Ignore past events if desired
+            if upcoming_only and start < datetime.datetime.now().replace(tzinfo=tz.tzlocal()):
+                continue
+
+            # calculate time difference from now
+            # assumes times from calendar have a flat 0 microseconds set.
+            # See https://stackoverflow.com/questions/3426870/calculating-time-difference#3427051
+            now = datetime.datetime.now().replace(microsecond=0).replace(tzinfo=tz.tzlocal())
+            diff = start - now
+
+            if filter and not filter(diff):
+                continue
+            
+            start_friendly = start.strftime("%A, %b %d @ %H:%M %Z")
+            timeUntil = u"{}".format(diff)
+            event = [title, timeUntil, start_friendly]
+            events.append(event)
+        return events
+    
     def get_events(self, upcoming_only=True, filter=None):
         """
         Returns a list of strings representing race events.
