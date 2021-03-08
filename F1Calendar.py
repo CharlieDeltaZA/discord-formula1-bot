@@ -36,10 +36,10 @@ class F1Calendar(object):
         events = self.get_events(upcoming_only=True)
         ret = []
         for e in events:
-            ret.append(e)
+            ret.append(e[0])
 
             # The race is the last event in a weekend
-            if " - grand prix" in e.lower():
+            if "grand prix" in e[1].lower():
                 break
         return ret
 
@@ -57,7 +57,7 @@ class F1Calendar(object):
         ret = []
 
         for item in self.cal_events:
-            title, start, end = self._get_event_data(item)
+            title, start, end, category = self._get_event_data(item)
 
             # Ignore past events if desired
             if upcoming_only and start < datetime.datetime.now().replace(tzinfo=tz.tzlocal()):
@@ -72,8 +72,7 @@ class F1Calendar(object):
             if filter and not filter(diff):
                 continue
 
-            ret.append(self._get_event_string(title, diff, start))
-
+            ret.append(self._get_event_string(title, diff, start, category))
         return ret
 
     def _event_filter_next_24h(self, diff):
@@ -89,7 +88,7 @@ class F1Calendar(object):
             return True
         return False
 
-    def _get_event_string(self, title, diff, start):
+    def _get_event_string(self, title, diff, start, category):
         """
         Return a friendly string for an event given the event's title, time diff, and start time
         """
@@ -98,7 +97,7 @@ class F1Calendar(object):
         # Original - "%a, %b %d %I:%M %p %Z" = Sun, Nov 25 03:10 PM South Africa Standard Time
         # Modified - "%A, %b %d %H:%M %Z" = Sunday, Nov 25 @ 15:10 South Africa Standard Time
         start_friendly = start.strftime("%A, %b %d @ %H:%M %Z")
-        return u":arrow_right: **{}**:\n   - Starts in: **{}**\n   - Starts at: **{}**\n".format(title, diff, start_friendly)  # .encode('utf-8')
+        return u":arrow_right: **{}**:\n   - Starts in: **{}**\n   - Starts at: **{}**\n".format(title, diff, start_friendly), category  # .encode('utf-8')
 
     def _get_event_data(self, event):
         """
@@ -108,10 +107,11 @@ class F1Calendar(object):
         title = event.get('summary').title()
         start_utc = event.get('dtstart').dt
         end_utc = event.get('dtend').dt
+        category = event.get('categories').to_ical().decode()
 
         # convert to local timezone
         # See https://stackoverflow.com/questions/4770297/convert-utc-datetime-string-to-local-datetime-with-python#4771733
         start = start_utc.astimezone(tz.tzlocal())
         end = end_utc.astimezone(tz.tzlocal())
 
-        return [title, start, end]
+        return [title, start, end, category]
