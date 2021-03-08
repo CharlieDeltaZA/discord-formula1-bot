@@ -9,7 +9,7 @@ DO_REQUEST = True
 root_dir = os.path.dirname(os.path.realpath(__file__))
 # Source the 2019 calendar from here when avail -- https://www.f1calendar.com/
 # Else, find a way to get one from formula1.com / FOM / FIA
-CALENDAR_FILE = root_dir + "/formula.1.2020.ics"
+CALENDAR_FILE = root_dir + "/formula.1.2021.ics"
 WEBHOOK_URL = open(root_dir + '/webhook_url.conf', 'r').readlines()[0].strip()
 
 webhook = DiscordWebhook(WEBHOOK_URL)
