@@ -21,13 +21,23 @@ class F1Calendar(object):
         """
         Returns friendly-strings of events that will begin in the next 24h.
         """
-        return self.get_events(upcoming_only=True, filter=self._event_filter_next_7d)
+        events = self.get_events(upcoming_only=True, filter=self._event_filter_next_7d)
+        ret = []
+        for e in events:
+            ret.append(e[0])
+        
+        return ret
 
     def get_events_next_24h(self):
         """
         Returns friendly-strings of events that will begin in the next 24h.
         """
-        return self.get_events(upcoming_only=True, filter=self._event_filter_next_24h)
+        events = self.get_events(upcoming_only=True, filter=self._event_filter_next_24h)
+        ret = []
+        for e in events:
+            ret.append(e[0])
+        
+        return ret
 
     def get_next_race_events(self):
         """
@@ -71,7 +81,8 @@ class F1Calendar(object):
 
             if filter and not filter(diff):
                 continue
-
+            
+            print(self._get_event_string(title, diff, start, category))
             ret.append(self._get_event_string(title, diff, start, category))
         return ret
 
