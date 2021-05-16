@@ -1,4 +1,4 @@
-# Discord Formula1 Bot
+# Discord Formula1 Bot :racing_car:
 
 Originally forked from [jfritz](https://github.com/jfritz/discord-formula1-bot) and updated to work in Python 3, because I had issues when trying to use it as it was.
 
@@ -32,8 +32,8 @@ You may need to edit `main.py` and update the calendar name.
 
 Source calendars from [F1Calendar](https://f1calendar.com/).
 
-You will need to edit all the Race Events to include `- Grand Prix`. For example `Austrian Grand Prix` becomes `Austrian Grand Prix - Grand Prix` - This is due to how the end of the weekend events is determined. Will look into making this more robust, but then the source needs to remain uniform.
+## Updates & Future
 
-## Updates
-
-I will be looking into updating this project to make use of the Discord Webhook package, as well finding a more robust way of using only the output of F1Calendar without having to edit each event to include an extra string.
+- [ ] Look into updating this project to make use of the Discord Webhook package
+- [x] Find a more robust way of using only the output of F1Calendar without having to edit each event to include an extra string
+- [ ] Look into contributing other calendars to SportsTimes repo and adding functionality for the script to send info about other race series
