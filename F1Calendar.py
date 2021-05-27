@@ -21,22 +21,24 @@ class F1Calendar(object):
         """
         Returns friendly-strings of events that will begin in the next 24h.
         """
-        events = self.get_events(upcoming_only=True, filter=self._event_filter_next_7d)
+        events = self.get_events(
+            upcoming_only=True, filter=self._event_filter_next_7d)
         ret = []
         for e in events:
             ret.append(e[0])
-        
+
         return ret
 
     def get_events_next_24h(self):
         """
         Returns friendly-strings of events that will begin in the next 24h.
         """
-        events = self.get_events(upcoming_only=True, filter=self._event_filter_next_24h)
+        events = self.get_events(
+            upcoming_only=True, filter=self._event_filter_next_24h)
         ret = []
         for e in events:
             ret.append(e[0])
-        
+
         return ret
 
     def get_next_race_events(self):
@@ -81,8 +83,8 @@ class F1Calendar(object):
 
             if filter and not filter(diff):
                 continue
-            
-            print(self._get_event_string(title, diff, start, category))
+
+            # print(self._get_event_string(title, diff, start, category))
             ret.append(self._get_event_string(title, diff, start, category))
         return ret
 
@@ -108,7 +110,8 @@ class F1Calendar(object):
         # Original - "%a, %b %d %I:%M %p %Z" = Sun, Nov 25 03:10 PM South Africa Standard Time
         # Modified - "%A, %b %d %H:%M %Z" = Sunday, Nov 25 @ 15:10 South Africa Standard Time
         start_friendly = start.strftime("%A, %b %d @ %H:%M %Z")
-        return u":arrow_right: **{}**:\n   - Starts in: **{}**\n   - Starts at: **{}**\n".format(title, diff, start_friendly), category  # .encode('utf-8')
+        # .encode('utf-8')
+        return u":arrow_right: **{}**:\n   - Starts in: **{}**\n   - Starts at: **{}**\n".format(title, diff, start_friendly), category
 
     def _get_event_data(self, event):
         """
