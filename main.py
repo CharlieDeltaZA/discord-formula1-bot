@@ -22,7 +22,7 @@ gtwcheu = {
 }
 f1 = {
     "webhook": DiscordWebhook(hooks['f1']),
-    "cal": GTWorldCalendar(F1_CALENDAR)
+    "cal": F1Calendar(F1_CALENDAR)
 }
 items.append(f1)
 items.append(gtwcheu)
