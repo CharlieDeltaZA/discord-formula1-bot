@@ -5,12 +5,15 @@ import json
 from DiscordWebhook import DiscordWebhook
 from F1Calendar import F1Calendar
 from GTWorldCalendar import GTWorldCalendar
+# from ELMSCalendar import ELMSCalendar
 # from discord_webhook import DiscordWebhook
 
 DO_REQUEST = True
 root_dir = os.path.dirname(os.path.realpath(__file__))
 GTWORLD_CALENDAR = root_dir + "/GTWorldChEu.2021.ics"
 F1_CALENDAR = root_dir + "/formula.1.2021.ics"
+ELMS_CALENDAR = root_dir + "/ELMS.2021.ics"
+WEC_CALENDAR = root_dir + "/WEC.2021.ics"
 # WEBHOOK_URL = open(root_dir + '/webhook_url.conf', 'r').readlines()[0].strip()
 webhookUrls = open(root_dir + '/webhook_urls.json')
 hooks = json.load(webhookUrls)
@@ -24,8 +27,18 @@ f1 = {
     "webhook": DiscordWebhook(hooks['f1']),
     "cal": F1Calendar(F1_CALENDAR)
 }
+elms = {
+    "webhook": DiscordWebhook(hooks['elms']),
+    "cal": GTWorldCalendar(ELMS_CALENDAR)
+}
+wec = {
+    "webhook": DiscordWebhook(hooks['wec']),
+    "cal": GTWorldCalendar(WEC_CALENDAR)
+}
 items.append(f1)
 items.append(gtwcheu)
+items.append(elms)
+items.append(wec)
 # cal = F1Calendar(CALENDAR_FILE)
 # cal = GTWorldCalendar(CALENDAR_FILE)
 dow = datetime.datetime.today().weekday()
